@@ -1,12 +1,18 @@
 sudo: required
 
+language: none
+
 services:
   - docker
 
-before_install:
+install:
   - docker build -t kerrongordon/gibbon .
   - docker images
   - docker ps -a
   - docker run -it -d -p 8080:80 kerrongordon/gibbon
+
+before_deploy:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+
+deploy:
   - docker push kerrongordon/gibbon
