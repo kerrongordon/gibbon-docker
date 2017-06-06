@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 # Install apache, PHP, and supplimentary programs. openssh-server, curl, and lynx-cur are for debugging the container.
-RUN apt update && apt -y upgrade && DEBIAN_FRONTEND=noninteractive apt -y install \
+RUN apt-get update && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     apache2 php7.0 php7.0-mysql libapache2-mod-php7.0 curl lynx-cur php7.0-xml php7.0-zip php7.0-curl php7.0-gd \
     wget
 
@@ -27,10 +27,10 @@ EXPOSE 80
 RUN wget https://github.com/GibbonEdu/core/archive/v13.0.02.tar.gz
 
 # extract files
-RUN tar -xvzf v13.0.02.tar.gz
+RUN tar -xzf v13.0.02.tar.gz
 
 # Copy this repo into place.
-RUN cp -a -v /core-13.0.02/. /var/www/site
+RUN cp -a /core-13.0.02/. /var/www/site
 
 # Copy .htaccess
 ADD .htaccess /var/www/site
