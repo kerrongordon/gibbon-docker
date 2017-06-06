@@ -39,8 +39,8 @@ ADD .htaccess /var/www/site
 ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 
 # Set permissions of all Gibbon files so they are not publicly writeable
-RUN chmod -Rv 755 /var/www/site
-RUN chown -Rv www-data:www-data /var/www/site
+RUN chmod -R 755 /var/www/site
+RUN chown -R www-data:www-data /var/www/site
 
 RUN rm -rf core-13.0.02
 RUN rm -rf v13.0.02.tar.gz
