@@ -6,7 +6,7 @@ services:
     image: kerrongordon/gibbon
     restart: on-failure
     ports:
-      - 8080:80
+      - 80:80
     networks:
       - back
   db:
