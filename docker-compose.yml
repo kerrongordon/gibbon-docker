@@ -4,18 +4,14 @@ services:
     depends_on:
       - db
     image: kerrongordon/gibbon
-    restart: always
+    restart: on-failure
     ports:
-      - 80:80
-    volumes:
-      - themes:/var/www/site/themes
-      - modules:/var/www/site/modules
-      - uploads:/var/www/site/uploads
+      - 8080:80
     networks:
       - back
   db:
     image: mysql:5.7
-    restart: always
+    restart: on-failure
     ports:
       - 3306:3306
     volumes:
@@ -29,6 +25,3 @@ networks:
   back:
 volumes:
   db_data:
-  themes:
-  modules:
-  uploads:
