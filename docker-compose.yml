@@ -1,0 +1,34 @@
+version: '2'
+services:
+  gibbon:
+    depends_on:
+      - db
+    image: kerrongordon/gibbon
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - themes:/var/www/site/themes
+      - modules:/var/www/site/modules
+      - uploads:/var/www/site/uploads
+    networks:
+      - back
+  db:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+       - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: p4ssw0rd!
+      MYSQL_DATABASE: ghost
+    networks:
+      - back
+networks:
+  back:
+volumes:
+  db_data:
+  themes:
+  modules:
+  uploads:
