@@ -24,13 +24,13 @@ ENV APACHE_PID_FILE /var/run/apache2.pid
 EXPOSE 80
 
 # get Gibbon v13.0.02
-RUN wget https://github.com/GibbonEdu/core/archive/v13.0.02.tar.gz
+RUN wget https://github.com/GibbonEdu/core/archive/v14.0.01.tar.gz
 
 # extract files
-RUN tar -xzf v13.0.02.tar.gz
+RUN tar -xzf v14.0.01.tar.gz
 
 # Copy this repo into place.
-RUN cp -a /core-13.0.02/. /var/www/site
+RUN cp -a /core-14.0.01/. /var/www/site
 
 # Copy .htaccess
 ADD .htaccess /var/www/site
