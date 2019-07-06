@@ -1003,3 +1003,5 @@ php_value allow_url_fopen On
 php_value max_input_vars 5000
 
 php_flag display_errors off
+
+php_value short_open_tag 1
