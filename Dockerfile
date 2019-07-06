@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 LABEL MAINTAINER Kerron Gordon <kgpsounds.com@gmail.com>
 
 # Install apache, PHP, and supplimentary programs. openssh-server, curl, and lynx-cur are for debugging the container.
-ONBUILD RUN apt-get update && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     git \
     wget \
     curl \
@@ -22,43 +22,36 @@ ONBUILD RUN apt-get update && apt-get -y upgrade && DEBIAN_FRONTEND=noninteracti
 
 # Enable apache mods.
 # Update the PHP.ini file, enable <? ?> tags and quieten logging.
-ONBUILD RUN a2enmod php7.2 && a2enmod rewrite && \
+RUN a2enmod php7.2 && a2enmod rewrite && \
     sed -i 's/short_open_tag = Off/short_open_tag = On/' /etc/php/7.2/apache2/php.ini && \
     sed -i 's/magic_quotes_gpc = On/magic_quotes_gpc = Off/g' /etc/php/7.2/apache2/php.ini && \
     sed -i "s/^allow_url_fopen.*$/allow_url_fopen = On/" /etc/php/7.2/apache2/php.ini && \
     sed -i 's/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/' /etc/php/7.2/apache2/php.ini
 
 # Manually set up the apache environment variables
-ONBUILD ENV APACHE_RUN_USER www-data
-ONBUILD ENV APACHE_RUN_GROUP www-data
-ONBUILD ENV APACHE_LOG_DIR /var/log/apache2
-ONBUILD ENV APACHE_LOCK_DIR /var/lock/apache2
-ONBUILD ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
 
 # Expose apache.
 EXPOSE 80
 
-# get Gibbon v18.0.00 (Bo Lo Bao)
-ONBUILD RUN wget -c https://github.com/GibbonEdu/core/archive/v18.0.00.tar.gz
-
-# extract files
-# Copy this repo into place.
-ONBUILD RUN tar -xzf v18.0.00.tar.gz && cp -a /core-18.0.00/. /var/www/site
-
-#get all i18n files  
-ONBUILD RUN git clone https://github.com/GibbonEdu/i18n.git ./var/www/site/i18n
+#install Gibbon v18.0.00 (Bo Lo Bao)
+RUN wget -c https://github.com/GibbonEdu/core/archive/v18.0.00.tar.gz && \
+            tar -xzf v18.0.00.tar.gz && cp -a /core-18.0.00/. /var/www/site && \
+            git clone https://github.com/GibbonEdu/i18n.git ./var/www/site/i18n
 
 # Copy .htaccess
-ONBUILD ADD .htaccess /var/www/site
+ADD .htaccess /var/www/site
 
 # Update the default apache site with the config we created.
-ONBUILD ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
+ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 
 # Set permissions of all Gibbon files so they are not publicly writeable
-ONBUILD RUN chmod -R 755 /var/www/site && chown -R www-data:www-data /var/www/site
-
-# clean up time
-ONBUILD RUN rm -rf core-18.0.00 && \
+RUN chmod -R 755 /var/www/site && chown -R www-data:www-data /var/www/site && \
+    rm -rf core-18.0.00 && \
     rm -rf v18.0.00.tar.gz && \
     apt-get remove -y wget && \
     apt-get clean autoclean && \
