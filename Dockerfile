@@ -35,12 +35,14 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
+ENV VERSION=18.0.00
+
 # Expose apache.
 EXPOSE 80
 
-#install Gibbon v18.0.00 (Bo Lo Bao)
-RUN wget -c https://github.com/GibbonEdu/core/archive/v18.0.00.tar.gz && \
-            tar -xzf v18.0.00.tar.gz && cp -a /core-18.0.00/. /var/www/site && \
+#install Gibbon v${VERSION}
+RUN wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
+            tar -xzf v${VERSION}.tar.gz && cp -a /core-${VERSION}/. /var/www/site && \
             git clone https://github.com/GibbonEdu/i18n.git ./var/www/site/i18n
 
 # Copy .htaccess
@@ -51,8 +53,8 @@ ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 
 # Set permissions of all Gibbon files so they are not publicly writeable
 RUN chmod -R 755 /var/www/site && chown -R www-data:www-data /var/www/site && \
-    rm -rf core-18.0.00 && \
-    rm -rf v18.0.00.tar.gz && \
+    rm -rf core-${VERSION} && \
+    rm -rf v${VERSION}.tar.gz && \
     apt-get remove -y wget && \
     apt-get clean autoclean && \
     apt-get autoremove -y && \
