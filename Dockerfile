@@ -35,7 +35,7 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
-ENV VERSION=18.0.00
+ENV VERSION=18.0.01
 
 # Expose apache.
 EXPOSE 80
@@ -51,7 +51,7 @@ ADD .htaccess /var/www/site
 # Update the default apache site with the config we created.
 ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 
-# Set permissions of all Gibbon files so they are not publicly writeable
+# Set permissions of all Gibbon files so they are not publicly writeable and clean up
 RUN chmod -R 755 /var/www/site && chown -R www-data:www-data /var/www/site && \
     rm -rf core-${VERSION} && \
     rm -rf v${VERSION}.tar.gz && \
@@ -62,3 +62,5 @@ RUN chmod -R 755 /var/www/site && chown -R www-data:www-data /var/www/site && \
 
 # By default start up apache in the foreground, override with /bin/bash for interative.
 CMD /usr/sbin/apache2ctl -D FOREGROUND
+
+VOLUME [ "/var/www/site/uploads", "/var/www/site/themes" ]
