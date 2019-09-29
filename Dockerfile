@@ -35,32 +35,38 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
+# Update the default apache site with the config we created.
+COPY apache-config.conf /etc/apache2/sites-enabled/000-default.conf
+
 ENV VERSION=18.0.01
+
+WORKDIR /var/www/site/
+
+# Copy .htaccess
+COPY .htaccess .
 
 # Expose apache.
 EXPOSE 80
 
 #install Gibbon v${VERSION}
+
 RUN wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
-            tar -xzf v${VERSION}.tar.gz && cp -a /core-${VERSION}/. /var/www/site && \
-            git clone https://github.com/GibbonEdu/i18n.git ./var/www/site/i18n
+    tar -xzf v${VERSION}.tar.gz && \
+    cp -a core-${VERSION}/. ./ && \
+    rm -rf core-${VERSION} && rm -rf v${VERSION}.tar.gz && \
+    git clone https://github.com/GibbonEdu/i18n.git ./i18n
 
-# Copy .htaccess
-ADD .htaccess /var/www/site
 
-# Update the default apache site with the config we created.
-ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
+# Set permissions of all Gibbon files so they are not publicly writeable
+RUN chmod -R 755 . && chown -R www-data:www-data .
 
-# Set permissions of all Gibbon files so they are not publicly writeable and clean up
-RUN chmod -R 755 /var/www/site && chown -R www-data:www-data /var/www/site && \
-    rm -rf core-${VERSION} && \
-    rm -rf v${VERSION}.tar.gz && \
-    apt-get remove -y wget && \
+# Clean up and remove unuse files 
+RUN apt-get remove -y wget && \
     apt-get clean autoclean && \
     apt-get autoremove -y && \
-    rm -rf /var/lib/{apt,dpkg,cache,log}/
+    rm -rfv /var/lib/{apt,dpkg,cache,log}/
+
+VOLUME /uploads /themes
 
 # By default start up apache in the foreground, override with /bin/bash for interative.
 CMD /usr/sbin/apache2ctl -D FOREGROUND
-
-VOLUME [ "/var/www/site/uploads", "/var/www/site/themes" ]
