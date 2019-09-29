@@ -56,7 +56,7 @@ RUN wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
     rm -rf core-${VERSION} && rm -rf v${VERSION}.tar.gz && \
     git clone https://github.com/GibbonEdu/i18n.git ./i18n
 
-
+COPY ./data .
 # Set permissions of all Gibbon files so they are not publicly writeable
 RUN chmod -R 755 . && chown -R www-data:www-data .
 
@@ -66,7 +66,7 @@ RUN apt-get remove -y wget && \
     apt-get autoremove -y && \
     rm -rfv /var/lib/{apt,dpkg,cache,log}/
 
-VOLUME /uploads /themes
+VOLUME /uploads /themes /modules
 
 # By default start up apache in the foreground, override with /bin/bash for interative.
 CMD /usr/sbin/apache2ctl -D FOREGROUND
