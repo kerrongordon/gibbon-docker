@@ -45,11 +45,7 @@ WORKDIR /var/www/site/
 # Copy .htaccess
 COPY .htaccess .
 
-# Expose apache.
-EXPOSE 80
-
 #install Gibbon v${VERSION}
-
 RUN wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
     tar -xzf v${VERSION}.tar.gz && \
     cp -a core-${VERSION}/. ./ && \
@@ -66,7 +62,10 @@ RUN apt-get remove -y wget && \
     apt-get autoremove -y && \
     rm -rfv /var/lib/{apt,dpkg,cache,log}/
 
-VOLUME /uploads /themes /modules
+VOLUME /var/www/site/
+
+# Expose apache.
+EXPOSE 80
 
 # By default start up apache in the foreground, override with /bin/bash for interative.
 CMD /usr/sbin/apache2ctl -D FOREGROUND
