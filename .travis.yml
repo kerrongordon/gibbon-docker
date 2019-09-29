@@ -7,8 +7,3 @@ services:
 
 install:
   - docker build -t kerrongordon/gibbon .
-  - docker images
-  - docker ps -a
-  - docker run -it -d -p 8080:80 kerrongordon/gibbon
-  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker push kerrongordon/gibbon
