@@ -36,19 +36,18 @@ ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
 # Update the default apache site with the config we created.
-COPY apache-config.conf /etc/apache2/sites-enabled/000-default.conf
+ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 
 ENV VERSION=18.0.01
 
 WORKDIR /var/www/site/
 
-COPY .htaccess .
-COPY ./data .
+ADD .htaccess .
 
 #install Gibbon v${VERSION}
 RUN wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
     tar -xzf v${VERSION}.tar.gz && \
-    cp -a core-${VERSION}/. ./ && \
+    cp -af core-${VERSION}/. ./ && \
     rm -rf core-${VERSION} && rm -rf v${VERSION}.tar.gz && \
     git clone https://github.com/GibbonEdu/i18n.git ./i18n
 
