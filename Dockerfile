@@ -42,8 +42,8 @@ ENV VERSION=18.0.01
 
 WORKDIR /var/www/site/
 
-# Copy .htaccess
 COPY .htaccess .
+COPY ./data .
 
 #install Gibbon v${VERSION}
 RUN wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
@@ -52,7 +52,6 @@ RUN wget -c https://github.com/GibbonEdu/core/archive/v${VERSION}.tar.gz && \
     rm -rf core-${VERSION} && rm -rf v${VERSION}.tar.gz && \
     git clone https://github.com/GibbonEdu/i18n.git ./i18n
 
-COPY ./data .
 # Set permissions of all Gibbon files so they are not publicly writeable
 RUN chmod -R 755 . && chown -R www-data:www-data .
 
