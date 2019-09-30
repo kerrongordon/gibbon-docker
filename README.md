@@ -15,10 +15,10 @@ cd gibbon-docker
 change database name, user and password
 
 ``` bash
-MYSQL_DATABASE: 'db'
-MYSQL_USER: 'user'
-MYSQL_PASSWORD: 'password'
-MYSQL_ROOT_PASSWORD: 'password'
+MYSQL_DATABASE=db
+MYSQL_USER=user
+MYSQL_PASSWORD=password
+MYSQL_ROOT_PASSWORD=password
 ```
 
 ## build Image
