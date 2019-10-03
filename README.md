@@ -33,6 +33,41 @@ docker build -t kerrongordon/gibbon .
 docker-compose up -d
 ```
 
-> Connect to database with *127.0.0.1* on port *3306*
->
-> open your web browser and go to [localhost](http://localhost/)
+Connect to database with *127.0.0.1* on port *3306*
+open your web browser and go to [localhost](http://localhost/)
+
+## Docker Compose example
+
+``` yml
+version: "3"
+services:
+  gibbon:
+    image: kerrongordon/gibbon
+    container_name: gibbon
+    network_mode: host
+    volumes:
+      - my-gibbon:/var/www/site/
+    ports:
+      - 80:80
+    restart: always
+
+  db:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: your-database-name // change me
+      MYSQL_USER: your-user-name // change me
+      MYSQL_PASSWORD: user-password // change me
+      MYSQL_ROOT_PASSWORD: root-password // change me
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+
+volumes:
+  my-db:
+  my-gibbon:
+```
