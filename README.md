@@ -4,13 +4,15 @@
 
 Install [Docker](https://docs.docker.com/install/) on your system then clone this [repo](https://github.com/kerrongordon/gibbon-docker.git)
 
+## FOR DEMO USE ONLY DO NOT USE IN PRODUCTION
+
 ``` bash
 git clone https://github.com/kerrongordon/gibbon-docker.git
 
 cd gibbon-docker
 ```
 
-## Create a *.env* file inside gibbon-docker folder
+## Create a *.env* file
 
 change database name, user and password
 
@@ -42,28 +44,27 @@ open your web browser and go to [localhost](http://localhost/)
 version: "3"
 services:
   gibbon:
-    image: kerrongordon/gibbon
+    image: kerrongordon/gibbon:latest
     container_name: gibbon
-    network_mode: host
-    volumes:
-      - my-gibbon:/var/www/site/
+    restart: unless-stopped
     ports:
-      - 80:80
-    restart: always
+      - 8080:80
+    volumes:
+      - my-gibbon:/var/www/gibbon.local/
+    depends_on:
+      - db
 
   db:
-    image: mysql:5.7
+    image: mysql:latest
     container_name: mysql
-    restart: always
+    restart: unless-stopped
     environment:
-      MYSQL_DATABASE: your-database-name // change me
-      MYSQL_USER: your-user-name // change me
-      MYSQL_PASSWORD: user-password // change me
-      MYSQL_ROOT_PASSWORD: root-password // change me
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - '3306:3306'
-    expose:
-      - '3306'
     volumes:
       - my-db:/var/lib/mysql
 

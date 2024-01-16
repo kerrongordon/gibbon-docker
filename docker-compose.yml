@@ -1,19 +1,20 @@
 version: "3"
 services:
   gibbon:
-    image: kerrongordon/gibbon
+    image: kerrongordon/gibbon:latest
     container_name: gibbon
-    network_mode: host
-    volumes:
-      - my-gibbon:/var/www/site/
+    restart: unless-stopped
     ports:
-      - 80:80
-    restart: always
+      - 8080:80
+    volumes:
+      - my-gibbon:/var/www/gibbon.local/
+    depends_on:
+      - db
 
   db:
-    image: mysql:5.7
+    image: mysql:latest
     container_name: mysql
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -21,8 +22,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - '3306:3306'
-    expose:
-      - '3306'
     volumes:
       - my-db:/var/lib/mysql
 
